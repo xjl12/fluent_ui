@@ -1,4 +1,140 @@
-Date format: DD/MM/YYYY
+## 4.0.1
+
+- `PaneItemAction.body` is no longer required ([#545](https://github.com/bdlukaa/fluent_ui/issues/545))
+- Added `DropDownButton.onOpen` and `DropDownButton.onClose` callbacks ([#537](https://github.com/bdlukaa/fluent_ui/issues/537))
+- Ensure `MenuFlyoutItem.onPressed` is called after the flyout is closed if `DropDownButton.closeAfterClick` is true ([#520](https://github.com/bdlukaa/fluent_ui/issues/520))
+- Ensure the `TimePicker` and `DatePicker` popups will fit if the screen is small ([#544](https://github.com/bdlukaa/fluent_ui/issues/544))
+- Do not apply padding to `NavigationAppBar.leading` ([#539](https://github.com/bdlukaa/fluent_ui/issues/539))
+- Added `AutoSuggestBox.noResultsFoundBuilder` ([#542](https://github.com/bdlukaa/fluent_ui/issues/542))
+- Added `AutoSuggestBox.inputFormatters` ([#542](https://github.com/bdlukaa/fluent_ui/issues/542))
+- Added support for Hebrew language
+
+## 4.0.0
+
+- **BREAKING** Removed `NavigationBody`. Use `PaneItem.body` instead ([#510](https://github.com/bdlukaa/fluent_ui/pull/510)/[#531](https://github.com/bdlukaa/fluent_ui/pull/531)):  
+  Before:
+  ```dart
+  NavigationView(
+    pane: NavigationPane(
+      items: [
+        PaneItem(icon: Icon(FluentIcons.add)),
+        PaneItem(icon: Icon(FluentIcons.add)),
+        PaneItem(icon: Icon(FluentIcons.add)),
+      ],
+    ),
+    content: NavigationBody(
+      children: [
+        _Item1(),
+        _Item2(),
+        _Item3(),
+      ],
+    ),
+  ),
+  ```
+
+  Now:  
+  ```dart
+  NavigationView(
+    ...
+    pane: NavigationPane(
+      items: [
+        PaneItem(
+          icon: Icon(FluentIcons.add),
+          body: _Item1(),
+        ),
+        PaneItem(
+          icon: Icon(FluentIcons.add),
+          body: _Item2(),
+        ),
+        PaneItem(
+          icon: Icon(FluentIcons.add),
+          body: _Item3(),
+        ),
+      ],
+    ),
+  ),
+  ```
+  
+  Or if you don't have a pane, you can use the content like the following:  
+  ```dart
+  NavigationView(
+    content: ScaffoldPage(
+      header: PageHeader(
+        title: titleRow,
+      ),
+      content: child,
+    ),
+  ),
+  ```
+  *either one attribute of pane or content must not be null*
+
+  Use `NavigationView.transitionsBuilder` to create custom transitions
+- Added `PaneItem.onTap` ([#533](https://github.com/bdlukaa/fluent_ui/issues/533))
+- Compact pane is no longer toggled when item is selected ([#533](https://github.com/bdlukaa/fluent_ui/issues/533)).
+  To toggle it programatically, use `NavigationViewState.toggleCompactOpenMode` when an item is tapped
+- Dynamic header height for open pane ([#530](https://github.com/bdlukaa/fluent_ui/issues/530))
+- Fixes memory leaks on `NavigationView`
+- `TreeView` updates: 
+  - All items of the same depth level now have the same indentation. Before, only items with the same parent were aligned.
+  - The hitbox for the expand icon of each item now uses the item's full height and is three times wider than the actual icon. This corresponds to the implementation in the explorer of Windows 10/11.
+  - You can now choose whether the items of a TreeView should use narrow or wide spacing.
+  - Do not invoke the tree view item on secondary tap ([#526](https://github.com/bdlukaa/fluent_ui/issues/526))
+  - **BREAKING** `TreeView.onSecondaryTap` is now a `(TreeViewItem item, TapDownDetails details)` callback:
+    Before:
+    ```dart
+    TreeView(
+      ...,
+      onSecondaryTap: (item, offset) async {}
+    ),
+    ```
+
+    Now:
+    ```dart
+    TreeView(
+      ...,
+      onSecondaryTap: (item, details) {
+        final offset = details.globalPosition;
+      },
+    )
+    ```
+  - Expand/collape items with right and left arrow keys, respectively ([#517](https://github.com/bdlukaa/fluent_ui/issues/517))
+  - Added `TreeView.onItemExpandToggle` and `TreeViewItem.onExpandToggle` ([#522](https://github.com/bdlukaa/fluent_ui/issues/522))
+- **BREAKING** `AutoSuggestBox` dynamic type support ([#441](https://github.com/bdlukaa/fluent_ui/issues/441)):
+
+  Before:
+  ```dart
+  AutoSuggestBox(
+    items: cats.map((cat) {
+      return AutoSuggestBoxItem(
+        value: cat,
+        onFocusChange: (focused) {
+          if (focused) debugPrint('Focused $cat');
+        }
+      );
+    }).toList(),
+    onSelected: (item) {
+      setState(() => selected = item);
+    },
+  ),
+  ```
+  
+  Now:
+  ```dart
+  AutoSuggestBox<String>(
+    items: cats.map((cat) {
+      return AutoSuggestBoxItem<String>(
+        value: cat,
+        label: cat,
+        onFocusChange: (focused) {
+          if (focused) debugPrint('Focused \$cat');
+        }
+      );
+    }).toList(),
+    onSelected: (item) {
+      setState(() => selected = item);
+    },
+  ),
+  ```
 
 ## [4.0.0-pre.4] - Almost there - [02/09/2022]
 
@@ -6,7 +142,7 @@ Date format: DD/MM/YYYY
 - Do not interpolate between infinite constraints on `TabView` ([#430](https://github.com/bdlukaa/fluent_ui/issues/430))
 - Do not rebuild the `TimePicker` popup when already rebuilding ([#437](https://github.com/bdlukaa/fluent_ui/issues/437))
 - `ToggleSwitch` updates:
-  - Use the correct color for `DefaultToggleSwitchThumb` ([#463](https://github.com/bdlukaa/fluent_ui/issues/463)) 
+  - Use the correct color for `DefaultToggleSwitchThumb` ([#463](https://github.com/bdlukaa/fluent_ui/issues/463))
   - Added `ToggleSwitch.leadingContent`, which positions the content before the switch ([#464](https://github.com/bdlukaa/fluent_ui/issues/464))
   - Added `ToggleSwitch.thumbBuilder`, which builds the thumb based on the current state
 - Added `TextChangedReason.cleared`, which is called when the text is cleared by the user in an `AutoSuggestBox` ([#461](https://github.com/bdlukaa/fluent_ui/issues/461))
@@ -17,7 +153,7 @@ Date format: DD/MM/YYYY
   - **BREAKING** Renamed `Combobox` to `ComboBox`
   - **BREAKING** Renamed `ComboboxItem` to `ComboBoxItem`
   - **BREAKING** Renamed `ComboBox.backgroundColor` to `ComboBox.popupColor`
-  - Implement `EditableComboBox`, a combo box that accepts items that aren't listed ([#244](https://github.com/bdlukaa/fluent_ui/issues/244)) 
+  - Implement `EditableComboBox`, a combo box that accepts items that aren't listed ([#244](https://github.com/bdlukaa/fluent_ui/issues/244))
   - `ComboBox.isExpanded: false` now correctly sets the button width ([#382](https://github.com/bdlukaa/fluent_ui/issues/382))
   - `ComboBox`'s items height are correctly calculated, as well as initial scroll offset ([#472](https://github.com/bdlukaa/fluent_ui/issues/478))
   - **BREAKING** `ComboBox.disabledHint` was renamed to `ComboBox.disabledPlaceholder`
@@ -37,7 +173,7 @@ Date format: DD/MM/YYYY
     This means the the content of the body will be fully traversed before moving on to another widget or group of widgets. [Learn more](https://docs.flutter.dev/development/ui/advanced/focus#focustraversalgroup-widget)
   - `TreeViewItem` now shows the focus highlight. They can also be selected using the keyboard
   - `Expander` now shows the focus highlight
-- Progress Indicators velocity is no longer affected by device frame rate ([#502](https://github.com/bdlukaa/fluent_ui/pull/502)) 
+- Progress Indicators velocity is no longer affected by device frame rate ([#502](https://github.com/bdlukaa/fluent_ui/pull/502))
 - Added `AutoSuggestBox.enabled` ([#504](https://github.com/bdlukaa/fluent_ui/issues/504))
 - Correctly keep the `NavigationView` animation state ([cf0fae1](https://github.com/bdlukaa/fluent_ui/commit/cf0fae16ce9a8879653606571e90af12f711bb84) ,[bd89ba6](https://github.com/bdlukaa/fluent_ui/commit/bd89ba6791dfe2762b37b3e291d8d1a7979cb3f5))
 - Calculate `selected` for all parents as soon as the `TreeView` is built
@@ -75,7 +211,7 @@ Date format: DD/MM/YYYY
   - Close the overlay if the textbox width is changes ([#456](https://github.com/bdlukaa/fluent_ui/issues/456))
   - `.items` can be dynamically loaded ([#387](https://github.com/bdlukaa/fluent_ui/issues/387))
   - **BREAKING** `.items` is now a `List<AutoSuggestBoxItem>`:
-  Before:
+    Before:
   ```dart
   AutoSuggestBox(
     items: [
@@ -124,7 +260,7 @@ Date format: DD/MM/YYYY
 - Expose more useful properties to `AutoSuggestBox` ([#419](https://github.com/bdlukaa/fluent_ui/issues/419))
 - **BREAKING** `PopupContentSizeInfo` was renamed to `ContentSizeInfo`
 - Reworked `ListTile` ([#422](https://github.com/bdlukaa/fluent_ui/pull/422)):
-  - **BREAKING** Removed `TappableListTile` 
+  - **BREAKING** Removed `TappableListTile`
   - Added support for single and multiple selection. Use `ListTile.selectable` ([#409](https://github.com/bdlukaa/fluent_ui/issues/409))
   - Added focus support
   - Use the Win UI design
@@ -244,7 +380,7 @@ Date format: DD/MM/YYYY
   - Update the picker popup style and behavior
 - Colors Update ([#368](https://github.com/bdlukaa/fluent_ui/pull/368)):
   - Added `ResourceDictionary`, which provides default colors to be used on components
-  - (forms) Updated `Combobox` style. It now uses `Acrylic` on the combobox popup menu 
+  - (forms) Updated `Combobox` style. It now uses `Acrylic` on the combobox popup menu
   - (buttons) Updated `Button`, `FilledButton`, `IconButton` and `TextButton` styles
   - (toggleable inputs) Updated `Checkbox`, `Chip`, `RadioButton`, `RatingBar`, `ToggleButton` and `ToggleSwitch`
     - **BREAKING** Updated `Slider`:
@@ -459,7 +595,7 @@ Date format: DD/MM/YYYY
   - Use `Curves.easeIn` for sticky navigation indicator by default
   - Use the correct accent color for navigation indicators by default
   - `EntrancePageTransition` is now the correct page transition used when display mode is top
-  - Apply correct press effect for `PaneItem` when display mode is top 
+  - Apply correct press effect for `PaneItem` when display mode is top
   - **BREAKING** Removed `NavigationPane.defaultNavigationIndicator`
   - **BREAKING** Replaced `offsets` and `sizes` with `pane` in `NavigationPane`
 
@@ -597,7 +733,7 @@ Date format: DD/MM/YYYY
 - **BREAKING** Minimal Flutter version is now 2.8
 - `NavigationAppBar.backgroundColor` is now applied correctly. ([#100](https://github.com/bdlukaa/fluent_ui/issues/100))
 - ComboBox's Popup Acrylic can now be disabled if wrapped in a `DisableAcrylic` ([#105](https://github.com/bdlukaa/fluent_ui/issues/105))
-- `NavigationPane` width can now be customizable ([#99](https://github.com/bdlukaa/fluent_ui/issues/99)) 
+- `NavigationPane` width can now be customizable ([#99](https://github.com/bdlukaa/fluent_ui/issues/99))
 - Implement `PaneItemAction` for `NavigationPane` ([#104](https://github.com/bdlukaa/fluent_ui/issues/104))
 
 ## [3.4.1] - [08/11/2021]
@@ -622,7 +758,7 @@ Date format: DD/MM/YYYY
 
 - Back button now isn't forced when using top navigation mode ([#74](https://github.com/bdlukaa/fluent_ui/issues/74))
 - `PilButtonBar` now accept 2 items ([#66](https://github.com/bdlukaa/fluent_ui/issues/66))
-- Added builder variant to `NavigationBody`. 
+- Added builder variant to `NavigationBody`.
 - Fixed content bug when `AppBar` was not supplied too `NavigationView`
 
 ## [3.2.0] - Flutter 2.5.0 - [15/09/2021]

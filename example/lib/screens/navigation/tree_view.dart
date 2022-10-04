@@ -3,6 +3,8 @@ import 'package:example/widgets/page.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
 class TreeViewPage extends ScrollablePage {
+  TreeViewPage({super.key});
+
   @override
   Widget buildHeader(BuildContext context) {
     return const PageHeader(title: Text('TreeView'));
@@ -29,8 +31,11 @@ class TreeViewPage extends ScrollablePage {
           onItemInvoked: (item) async => debugPrint('onItemInvoked: $item'),
           onSelectionChanged: (selectedItems) async => debugPrint(
               'onSelectionChanged: ${selectedItems.map((i) => i.value)}'),
+          onSecondaryTap: (item, details) async {
+            debugPrint('onSecondaryTap $item at ${details.globalPosition}');
+          },
         ),
-        codeSnippet: '''final items = [
+        codeSnippet: r'''final items = [
   TreeViewItem(
     content: const Text('Personal Documents'),
     value: 'personal_docs',
@@ -86,73 +91,79 @@ TreeView(
   onItemInvoked: (item) async => debugPrint('onItemInvoked: \$item'),
   onSelectionChanged: (selectedItems) async => debugPrint(
               'onSelectionChanged: \${selectedItems.map((i) => i.value)}'),
+  onSecondaryTap: (item, details) async {
+    debugPrint('onSecondaryTap $item at ${details.globalPosition}');
+  },
 )
 ''',
       ),
       subtitle(content: const Text('A TreeView with lazy-loading items')),
       CardHighlight(
-        child: TreeView(
-          selectionMode: TreeViewSelectionMode.single,
-          shrinkWrap: true,
-          items: lazyItems,
-          onItemInvoked: (item) async => debugPrint('onItemInvoked: $item'),
-          onSelectionChanged: (selectedItems) async => debugPrint(
-              'onSelectionChanged: ${selectedItems.map((i) => i.value)}'),
+        child: Column(
+          children: [
+            TreeView(
+              shrinkWrap: true,
+              items: lazyItems,
+              onItemInvoked: (item) async => debugPrint('onItemInvoked: $item'),
+              onSelectionChanged: (selectedItems) async => debugPrint(
+                  'onSelectionChanged: ${selectedItems.map((i) => i.value)}'),
+              onSecondaryTap: (item, details) async {
+                debugPrint('onSecondaryTap $item at ${details.globalPosition}');
+              },
+            ),
+          ],
         ),
-        codeSnippet: '''final lazyItems = [
+        codeSnippet: r'''final lazyItems = [
   TreeViewItem(
-    content: const Text('Work Documents'),
-    value: 'work_docs',
-    // this means the item children will futurely be inserted
+    content: const Text('Item with lazy loading'),
+    value: 'lazy_load',
+    // This means the item will be expandable, although there are no
+    // children yet.
     lazy: true,
-    // ensure the list is modifiable
+    // Ensure the list is modifiable.
     children: [],
-    onInvoked: (item) async {
-      // if it's already populated, return
-      // we don't want to populate it twice
+    onExpandToggle: (item, getsExpanded) async {
+      // If it's already populated, return.
       if (item.children.isNotEmpty) return;
-      // mark as loading
-      setState(() => item.loading = true);
-      // do your fetching...
+
+      // Do your fetching...
       await Future.delayed(const Duration(seconds: 2));
-      setState(() {
-        item
-          // set loading to false
-          ..loading = false
-          // add the fetched nodes
-          ..children.addAll([
-            TreeViewItem(
-              content: const Text('XYZ Functional Spec'),
-              value: 'xyz_functional_spec',
-            ),
-            TreeViewItem(
-              content: const Text('Feature Schedule'),
-              value: 'feature_schedule',
-            ),
-            TreeViewItem(
-              content: const Text('Overall Project Plan'),
-              value: 'overall_project_plan',
-            ),
-            TreeViewItem(
-              content: const Text(
-                'Feature Resources Allocation (this text should not overflow)',
-                overflow: TextOverflow.ellipsis,
-              ),
-              value: 'feature_resources_alloc',
-            ),
-          ]);
-      });
+      
+      // ...and add the fetched nodes.
+      item.children.addAll([
+        TreeViewItem(
+          content: const Text('Lazy item 1'),
+          value: 'lazy_1',
+        ),
+        TreeViewItem(
+          content: const Text('Lazy item 2'),
+          value: 'lazy_2',
+        ),
+        TreeViewItem(
+          content: const Text('Lazy item 3'),
+          value: 'lazy_3',
+        ),
+        TreeViewItem(
+          content: const Text(
+            'Lazy item 4 (this text should not overflow)',
+            overflow: TextOverflow.ellipsis,
+          ),
+          value: 'lazy_4',
+        ),
+      ]);
     },
   ),
 ];
 
 TreeView(
-  selectionMode: TreeViewSelectionMode.multiple,
   shrinkWrap: true,
   items: lazyItems,
-  onItemInvoked: (item) async => debugPrint('onItemInvoked: \$item'),
+  onItemInvoked: (item) async => debugPrint('onItemInvoked: $item'),
   onSelectionChanged: (selectedItems) async => debugPrint(
-              'onSelectionChanged: \${selectedItems.map((i) => i.value)}'),
+    'onSelectionChanged: ${selectedItems.map((i) => i.value)}'),
+  onSecondaryTap: (item, details) async {
+    debugPrint('onSecondaryTap $item at ${details.globalPosition}');
+          },
 )
 ''',
       ),
@@ -210,50 +221,42 @@ TreeView(
 
   late final lazyItems = [
     TreeViewItem(
-      content: const Text('Work Documents'),
-      value: 'work_docs',
-      // this means the item will be expandable
+      content: const Text('Item with lazy loading'),
+      value: 'lazy_load',
+      // This means the item will be expandable, although there are no
+      // children yet.
       lazy: true,
-      // ensure the list is modifiable
+      // Ensure the list is modifiable.
       children: [],
-      onInvoked: (item) async {
-        // if it's already populated, return
+      onExpandToggle: (item, getsExpanded) async {
+        // If it's already populated, return.
         if (item.children.isNotEmpty) return;
-        // mark as loading
-        setState(() => item.loading = true);
-        // do your fetching...
+
+        // Do your fetching...
         await Future.delayed(const Duration(seconds: 2));
-        setState(() {
-          item
-            // set loading to false
-            ..loading = false
-            // add the fetched nodes
-            ..children.addAll([
-              TreeViewItem(
-                content: const Text('XYZ Functional Spec'),
-                value: 'xyz_functional_spec',
-              ),
-              TreeViewItem(
-                content: const Text('Feature Schedule'),
-                value: 'feature_schedule',
-              ),
-              TreeViewItem(
-                content: const Text('Overall Project Plan'),
-                value: 'overall_project_plan',
-              ),
-              TreeViewItem(
-                content: const Text(
-                  'Feature Resources Allocation (this text should not overflow)',
-                  overflow: TextOverflow.ellipsis,
-                ),
-                value: 'feature_resources_alloc',
-              ),
-            ]);
-        });
-        setState(() {
-          item.expanded = true;
-          item.updateSelected();
-        });
+
+        // ...and add the fetched nodes.
+        item.children.addAll([
+          TreeViewItem(
+            content: const Text('Lazy item 1'),
+            value: 'lazy_1',
+          ),
+          TreeViewItem(
+            content: const Text('Lazy item 2'),
+            value: 'lazy_2',
+          ),
+          TreeViewItem(
+            content: const Text('Lazy item 3'),
+            value: 'lazy_3',
+          ),
+          TreeViewItem(
+            content: const Text(
+              'Lazy item 4 (this text should not overflow)',
+              overflow: TextOverflow.ellipsis,
+            ),
+            value: 'lazy_4',
+          ),
+        ]);
       },
     ),
   ];

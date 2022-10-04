@@ -1,6 +1,6 @@
 name: fluent_ui
 description: Implements Windows UI in Flutter. Based on the official documentation
-version: 4.0.0-pre.4
+version: 4.0.1
 homepage: https://github.com/bdlukaa/fluent_ui
 
 environment:
@@ -25,6 +25,7 @@ dev_dependencies:
   intl_utils: ^2.7.0
 
 flutter:
+  generate: true
   uses-material-design: true
   assets:
     - assets/AcrylicNoise.png
@@ -32,7 +33,3 @@ flutter:
     - family: FluentIcons
       fonts:
         - asset: fonts/FluentIcons.ttf
-
-flutter_intl:
-  enabled: true # Required. Must be set to true to activate the package. Default: false
-  class_name: FluentS

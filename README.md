@@ -31,7 +31,7 @@
 
 <div align="center">
   <a href="https://bdlukaa.github.io/fluent_ui">
-    <img src="images/example-showcase.png" />
+    <img src="https://raw.githubusercontent.com/bdlukaa/fluent_ui/master/images/example-showcase.png" />
   </a>
 </div>
 
@@ -65,7 +65,7 @@ Add the package to your dependencies:
 
 ```yaml
 dependencies:
-  fluent_ui: ^3.10.0
+  fluent_ui: ^4.0.0
 ```
 
 <p align="center">OR</p>
@@ -136,6 +136,7 @@ FluentUI widgets currently supports out-of-the-box an wide number of languages, 
 - Dutch (@h3x4d3c1m4l)
 - French (@WinXaito)
 - German (@larsb24)
+- Hebrew (@yehudakremer)
 - Hindi (@alexmercerind)
 - Italian (@patricknicolosi)
 - Japanese (@chari8)
@@ -167,8 +168,7 @@ If you want to contribute adding new localizations please follow this steps:
 - [Fork the repo](https://github.com/bdlukaa/fluent_ui/fork)
 - Copy `lib/l10n/intl_en.arb` file into `lib/l10n` folder with a new language code, following [this list of ISO 859-1 codes](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)
 - Update the contents in the newly created file. Specially, please update the `@locale` value with the corresponding ISO code.
-- Then update the `localization.dart:defaultSupportedLocales` list, adding an entry for each new locale
-- If your IDE doesn't have any of the `intl` plugins ([Intl plugin for Android Studio/IntelliJ](https://plugins.jetbrains.com/plugin/13666-flutter-intl) / [Flutter Intl for VSCode](https://marketplace.visualstudio.com/items?itemName=localizely.flutter-intl) ) please run your project and code generation will take place.
+- Run your project and code generation will take place or run command `flutter gen-l10n`
 - When you're done, [make a new pull request](https://github.com/bdlukaa/fluent_ui/pulls)
 
 More about [Localization in the Flutter Official Documentation](https://docs.flutter.dev/development/accessibility-and-localization/internationalization)
